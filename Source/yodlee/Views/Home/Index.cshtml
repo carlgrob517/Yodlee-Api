@@ -1,0 +1,403 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="">
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <p></p>
+        <p></p>
+        <p></p>
+        <h2>Creat New User</h2>
+        <p>
+
+
+            <div class="box-body">
+
+                <div class="row">
+                    <div class="form-group col-sm-6 col-md-6">
+                        <label class="col-sm-2 control-label asterisk">First Name </label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-6">
+                        <label class="col-sm-2 control-label asterisk">Last Name</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="" required="required">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-sm-6 col-md-6">
+                        <label class="col-sm-2 control-label asterisk">UserId</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="userId" name="userId" value="" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6 col-md-6">
+                        <label class="col-sm-2 control-label asterisk">Email</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="email" name="email" value="" required="required">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="walk_request_button">
+                    <button id="btnAddUser" class="btn-info-update btn btn-primary">Create User</button>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-sm-6 col-md-6">
+                        <label class="col-sm-2 control-label asterisk">Exist User Id</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="exist_uid" name="exist_uid" value="" required="required">
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </p>
+
+        <div class="box-body">
+            <div id="container-fastlink">
+                <div style="text-align: center;">
+                    <button type="submit" id="btn-fastlink" class="btn-info-update btn btn-primary"> Link an Account </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="box-body" style="margin-top:20px;">
+
+            <div id="container-fastlink">
+                <div style="text-align: center;">
+                    <button type="submit" id="btn-accounts" class="btn-info-update btn btn-primary"> Get Accounts </button>
+                </div>
+            </div>
+
+
+            <table id="accounts" style="width:100%">
+                <tr>
+                    <td>account</td>
+                    <td>account</td>
+                    <td>account</td>
+                    <td>account</td>
+                </tr>
+            </table>
+
+
+
+            <div id="container-fastlink" class="padding">
+                <label class="col-sm-2 control-label asterisk">Input Account Id</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="account_id" name="account_id" value="" required="required">
+                </div>               
+            </div>
+
+
+
+            <div id="container-fastlink">
+                <div style="text-align: center;">
+                    <button type="submit" id="btn-transaction" class="btn-info-update btn btn-primary"> Get Transaction </button>
+                </div>
+
+
+
+            </div>
+
+            <table id="transactions" style="width:100%">
+                <tr>
+                    <td>January</td>
+                    <td>January</td>
+                    <td>January</td>
+                    <td>$100</td>
+                </tr>
+
+            </table>
+
+
+        </div>
+
+
+            <input type="hidden" value="@ViewBag.token" id="token" />
+            <input type="hidden" value="" id="user_token" />
+            <input type="hidden" name="csrf-token" value="nc98P987bcpncYhoadjoiydc9ajDlcn">
+            <input type="hidden" id="id" value="">
+        </div>
+
+
+
+@section Scripts
+{
+    <script type='text/javascript' src='https://cdn.yodlee.com/fastlink/v1/initialize.js'></script>
+    <script type="text/javascript">
+
+        
+        $('#btn-accounts').click(function (e) {
+            var user_token = $("#user_token").val();
+            if (user_token == null || user_token == "") {
+                return;
+            }
+
+            $.ajax({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Api-Version', '1.1');
+                    xhr.setRequestHeader('Authorization', "Bearer " + user_token);
+                },
+                type: 'GET',                
+                dataType: 'json',
+                contentType: "application/json",
+                url: 'https://development.api.yodlee.com/ysl/accounts',
+                success: function (result) {
+                    
+                    accounts = result.account;
+                    var html = "";                    
+
+                    for (i = 0; i < accounts.length; i++) {                        
+                        html = html + '<tr>';
+                        html = html + '<td>' + accounts[i].id + '</td>';
+                        html = html + '<td>' + accounts[i].accountName + '</td>';                        
+                        html = html + '</tr>';
+                    }
+
+                    $('#accounts tbody').html(html);
+
+                    console.log(result);                                        
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert(e.responseText);
+                }
+            });
+
+
+        });
+
+        $('#btn-transaction').click(function (e) {
+        
+            var user_token = $("#user_token").val();
+            var account_id = $("#account_id").val();
+            if (user_token == null || user_token == "" || account_id == null || account_id == "") {
+                alert("input account id");
+                return;                
+            }
+                    
+
+            var fromdate = '2012-02-01';
+            $.ajax({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Api-Version', '1.1');
+                    xhr.setRequestHeader('Authorization', "Bearer " + user_token);
+                },
+                type: 'GET',
+                data: { fromDate: fromdate, container: 'bank', accountId: account_id  },
+                dataType: 'json',
+                contentType: "application/json",
+                url: 'https://development.api.yodlee.com/ysl/transactions',
+                success: function (result) {
+                    console.log(result);
+                    trans = result.transaction;
+                    if (trans != "" && trans != null) {
+
+                        var html = "";
+                        console.log(trans.length);
+
+                        for (i = 0; i < trans.length; i++) {
+                            console.log(trans[i].id);
+                            html = html + '<tr>';
+                            html = html + '<td>' + trans[i].id + '</td>';
+                            html = html + '<td>' + trans[i].type + '</td>';
+                            html = html + '<td>' + trans[i].amount.amount + '</td>';
+                            html = html + '<td>' + trans[i].amount.currency + '</td>';
+                            html = html + '<td>' + trans[i].status + '</td>';
+                            html = html + '</tr>';
+                        }
+
+                        $('#transactions tbody').html(html);
+
+                        console.log(result);
+                        console.log('trans' + trans);
+                    } else {
+                        console.log(result);
+                        $('#transactions tbody').html("");
+                        alert("no trans");
+                    }
+                    
+                    //alert(html);
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert(e.responseText);
+                }
+            });
+        });
+
+        $('#btn-fastlink').click(function (e) {
+
+
+            var main_id = $("#id").val();
+            var exist_uid = $("#exist_uid").val();
+
+            if (main_id != "" && main_id != null) {
+                id = main_id;
+            } else if (exist_uid != "" && exist_uid != null) {
+                id = exist_uid;
+            } else {
+                id = "";
+            }
+            
+           
+            if (id != "" && id != null) {
+                var url = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+                   new Uri(
+                   new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+                   Url.Content("~/")
+               ).ToString(), true));
+                // get user token                                
+                $.ajax({                                   
+                    type: 'GET',
+                    data: { id: id },
+                    dataType: 'json',
+                    contentType: "application/json",
+                    url: url + 'Home/getToken',
+                    success: function (result) {
+                        console.log(result);                       
+                        alert(result.token);
+                        var user_token = result.token;
+                        $("#user_token").val(user_token);
+
+                        window.fastlink.open({
+                            fastLinkURL: 'https://development.node.yodlee.com/authenticate/development-363/?channelAppName=tieredpreprod',
+                            jwtToken: 'Bearer ' + user_token,
+                            params: '',
+                            onSuccess: function (data) {
+                                console.log(data);
+                            },
+                            onError: function (data) {
+                                console.log(data);
+                            },
+                            onExit: function (data) {
+                                console.log(data);
+                            },
+                            onEvent: function (data) {
+                                console.log(data);
+                            }
+                        }, 'container-fastlink');
+
+
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        alert("failed" + e.responseText);
+                    }
+                });
+
+               
+            } else {
+
+               
+        
+                alert("create a new user or input exist user id");
+            }
+           
+        });
+       
+
+
+        $('#btnAddUser').click(function (e) {
+
+            var url = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+                   new Uri(
+                   new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+                   Url.Content("~/")
+               ).ToString(), true));
+
+            var userId = $('#userId').val();
+            var email = $('#email').val();
+            var token = $('#token').val();
+
+            var firstName = $('#firstName').val();
+            var lastName = $('#lastName').val();
+
+            if (userId == '' || email == '') {
+                //alert("Input All Infos");
+                alert(url);
+                return;
+            }
+
+            var data = JSON.stringify({
+                "user": {
+                    "loginName": userId, "email": email,
+                    "name": { "first": firstName, "last": lastName },
+                    "address": { "address1": "address1", "state": "state", "city": "city", "zip": "zipcode", "country": "USA" },
+                    "preferences": { "currency": "USD", "timeZone": "PST", "dateFormat": "03/23/2019", "locale": "en_US" }
+                }
+            });
+
+            $.ajax({
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Api-Version', '1.1');
+                    xhr.setRequestHeader('Authorization', "Bearer " + token);
+
+                },
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                contentType: "application/json",
+                url: 'https://development.api.yodlee.com/ysl/user/register',
+                success: function (result) {
+
+                    console.log(result);
+                    $("#id").val(result.user.loginName);
+                    alert(result.user.loginName + "  Welcome");
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert(e.responseText);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+
+            $('#password, #confirm_password').on('keyup', function () {
+                if ($('#password').val() == $('#confirm_password').val()) {
+                    $('#message').html('Matching').css('color', 'green');
+                } else
+                    $('#message').html('Not Matching').css('color', 'red');
+            });
+
+            $('#confirm_password').blur(function () {
+
+            });
+
+        })
+
+        function check() {
+            var password = document.getElementById('password').value;
+            var confirm_password = document.getElementById('confirm_password').value;
+            if (confirm_password.length > password.length) {
+                //alert("Wrong Password");
+            }
+            if (password.length == confirm_password.length) {
+                if (!password.includes(confirm_password)) {
+                    //alert("Wrong Password");
+                }
+            }
+        }
+    </script>
+
+}
+
+
