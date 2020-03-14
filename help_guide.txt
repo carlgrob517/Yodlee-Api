@@ -16,3 +16,11 @@ https://en.wikibooks.org/wiki/Cryptography/Generate_a_keypair_using_OpenSSL
 $ openssl genpkey -out rsakey.pem -algorithm RSA -pkeyopt rsa_keygen_bits:2048
 $ openssl rsa -pubout -in private_key.pem -out public_key.pem
 
+1. create an application JWT token by using issuer id and private key .
+2. create a new user by using application JWT token.
+3. Generate an user JWT token by using the created user id .
+4. link bank using the user token.
+5. get all linked accounts and get transaction history by account Id.
+... there are a lots of apis relative with bank finacial.
+
+
