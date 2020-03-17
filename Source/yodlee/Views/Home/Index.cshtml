@@ -65,6 +65,12 @@
                 </div>
 
 
+
+
+
+
+
+
             </div>
         </p>
 
@@ -75,6 +81,14 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="walk_request_button" style="margin-top:10px;">
+            <button id="btnDelete" class="btn-info-update btn btn-primary">Delete  User</button>
+        </div>
+
+
 
 
         <div class="box-body" style="margin-top:20px;">
@@ -101,7 +115,7 @@
                 <label class="col-sm-2 control-label asterisk">Input Account Id</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="account_id" name="account_id" value="" required="required">
-                </div>               
+                </div>
             </div>
 
 
@@ -129,11 +143,11 @@
         </div>
 
 
-            <input type="hidden" value="@ViewBag.token" id="token" />
-            <input type="hidden" value="" id="user_token" />
-            <input type="hidden" name="csrf-token" value="nc98P987bcpncYhoadjoiydc9ajDlcn">
-            <input type="hidden" id="id" value="">
-        </div>
+        <input type="hidden" value="@ViewBag.token" id="token" />
+        <input type="hidden" value="" id="user_token" />
+        <input type="hidden" name="csrf-token" value="nc98P987bcpncYhoadjoiydc9ajDlcn">
+        <input type="hidden" id="id" value="">
+    </div>
 
 
 
@@ -179,8 +193,6 @@
                     alert(e.responseText);
                 }
             });
-
-
         });
 
         $('#btn-transaction').click(function (e) {
@@ -369,6 +381,42 @@
             });
         });
 
+
+        $('#btnDelete').click(function (e) {
+
+            var url = @Html.Raw(HttpUtility.JavaScriptStringEncode(
+                   new Uri(
+                   new Uri(this.Context.Request.Url.GetLeftPart(UriPartial.Authority)),
+                   Url.Content("~/")
+               ).ToString(), true));
+            
+          
+            var del = $('#user_token').val();
+            if (del == null || del == "") {
+                alert('link firstly');
+                return
+            }
+            $.ajax({
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Api-Version', '1.1');
+                    xhr.setRequestHeader('Authorization', "Bearer " + del);
+                },
+                type: 'DELETE',                
+                dataType: 'json',
+                contentType: "application/json",
+                url: 'https://development.api.yodlee.com/ysl/user/unregister',
+                success: function (result, textStatus, jqXHR) {
+                    if (jqXHR.status == 204) {
+                        alert("User deleted successfully")  
+                    }                    
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert(e.responseText);
+                }
+            });
+        });
         $(document).ready(function () {
 
             $('#password, #confirm_password').on('keyup', function () {
